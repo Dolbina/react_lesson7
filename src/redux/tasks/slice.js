@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchTasks, addTask,deleteTask, toggleCompleted } from './operations.js';
+import { logOut } from 'redux/auth/operations';
+import { fetchTasks, addTask,deleteTask } from './operations.js';
 
 const handlePending = state => {
   state.isLoading = true;
@@ -20,12 +21,11 @@ const tasksSlice = createSlice({
     [fetchTasks.pending]: handlePending,
     [addTask.pending]: handlePending,
     [deleteTask.pending]: handlePending,
-    [toggleCompleted.pending]: handlePending,
+
     [fetchTasks.rejected]: handleRejected,
     [addTask.rejected]: handleRejected,
     [deleteTask.rejected]: handleRejected,
-    [toggleCompleted.rejected]: handleRejected,
-    
+
     [fetchTasks.fulfilled](state, action) {
       state.isLoading = false;
       state.error = null;
@@ -46,14 +46,10 @@ const tasksSlice = createSlice({
       );
       state.items.splice(index, 1);
     },
-
-    [toggleCompleted.fulfilled](state, action) {
-      state.isLoading = false;
+    [logOut.fulfilled](state) {
+      state.items = [];
       state.error = null;
-      const index = state.items.findIndex(
-        task => task.id === action.payload.id
-      );
-      state.items.splice(index, 1, action.payload);
+      state.isLoading = false;
     },
   },
 });
